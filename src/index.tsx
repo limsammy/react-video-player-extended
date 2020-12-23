@@ -214,15 +214,15 @@ function VideoPlayer(props: Props) {
   }
 
   const handleNextFrameClick = () => {
-    console.log(`Moving to next frame with fps: ${fps}`)
+    // console.log(`Moving to next frame with fps: ${fps}`)
     const frameTime = 1 / fps
     playerEl.current.currentTime = Math.min(
       playerEl.current.duration,
       playerEl.current.currentTime + frameTime,
     )
-    console.log("current.duration: " + playerEl.current.duration)
-    console.log("current.currentTime: " + playerEl.current.currentTime)
-    console.log("frametime: " + frameTime)
+    // console.log("current.duration: " + playerEl.current.duration)
+    // console.log("current.currentTime: " + playerEl.current.currentTime)
+    // console.log("frametime: " + frameTime)
 
     // send currentTime, fps, duration
     var payload = {
@@ -231,12 +231,12 @@ function VideoPlayer(props: Props) {
       fps: fps,
       frameTime: frameTime
     }
-    console.log(payload)
+    // console.log(payload)
 
-    console.log("get csrf cookie")
+    // console.log("get csrf cookie")
     var csrfToken = Cookies.get("csrftoken")
 
-    console.log("sending request with payload...")
+    // console.log("sending request with payload...")
     fetch("/api/frame", {
       headers: {
         "Content-Type": "application/json",
@@ -246,17 +246,17 @@ function VideoPlayer(props: Props) {
       method: "POST",
       body: JSON.stringify(payload)
     }).then(response => {
-      console.log(response)
+      // console.log(response)
       return response.json()
     }).catch(err => {
-      console.log("Error: " + err)
+      // console.log("Error: " + err)
     })
 
-    console.log("end fetch here")
+    // console.log("end fetch here")
   }
 
   const handleLastFrameClick = () => {
-    console.log(`Moving to last frame with fps: ${fps}`)
+    // console.log(`Moving to last frame with fps: ${fps}`)
     const frameTime = 1 / fps
     playerEl.current.currentTime = Math.max(0, playerEl.current.currentTime - frameTime)
   }
