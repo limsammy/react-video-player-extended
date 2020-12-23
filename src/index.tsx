@@ -288,7 +288,7 @@ function VideoPlayer(props: Props) {
     console.log("submit button pressed!");
     // send currentTime, fps, duration
     var payload = {
-      flag_num: currentFrame
+      frame_num: currentFrame
     }
     console.log(payload)
 
