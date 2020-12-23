@@ -249,7 +249,7 @@ function VideoPlayer(props: Props) {
       // console.log(response)
       return response.json()
     }).catch(err => {
-      // console.log("Error: " + err)
+      console.log("Error: " + err)
     })
 
     // console.log("end fetch here")
