@@ -37,6 +37,7 @@ interface Props {
   selectedMarker?: Marker
   viewSettings?: SettingsSelection[]
   markerConfiguration?: MarkerConfiguration
+  currentFrame: number
 }
 
 const DEFAULT_VOLUME: number = 0.7
@@ -50,6 +51,8 @@ function VideoPlayer(props: Props) {
   const [videoDuration, setVideoDuration] = useState<number>(null)
   const [muted, setMuted] = useState<boolean>(false)
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false)
+
+  const [currentFrame, setCurrentFrame] = useState<number>(0)
 
   const {
     url,
@@ -136,6 +139,9 @@ function VideoPlayer(props: Props) {
   }
 
   const handleProgress = (e: Event) => {
+    // set currentFrame
+    setCurrentFrame(Math.round(25 * playerEl.current.currentTime))
+
     const { currentTarget } = e
     // tslint:disable-next-line: no-shadowed-variable
     const currentTime = currentTarget['currentTime']
@@ -220,18 +226,12 @@ function VideoPlayer(props: Props) {
       playerEl.current.duration,
       playerEl.current.currentTime + frameTime,
     )
-    // console.log("current.duration: " + playerEl.current.duration)
-    // console.log("current.currentTime: " + playerEl.current.currentTime)
-    // console.log("frametime: " + frameTime)
 
     // send currentTime, fps, duration
     var payload = {
       duration: playerEl.current.duration,
       currentTime: playerEl.current.currentTime,
-      fps: fps,
-      frameTime: frameTime
     }
-    // console.log(payload)
 
     // console.log("get csrf cookie")
     var csrfToken = Cookies.get("csrftoken")
@@ -251,67 +251,123 @@ function VideoPlayer(props: Props) {
     }).catch(err => {
       console.log("Error: " + err)
     })
-
-    // console.log("end fetch here")
   }
 
   const handleLastFrameClick = () => {
     // console.log(`Moving to last frame with fps: ${fps}`)
     const frameTime = 1 / fps
     playerEl.current.currentTime = Math.max(0, playerEl.current.currentTime - frameTime)
+
+    // send currentTime, fps, duration
+    var payload = {
+      duration: playerEl.current.duration,
+      currentTime: playerEl.current.currentTime,
+    }
+
+    // console.log("get csrf cookie")
+    var csrfToken = Cookies.get("csrftoken")
+
+    // console.log("sending request with payload...")
+    fetch("/api/frame", {
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRFToken": csrfToken
+      },
+      method: "POST",
+      body: JSON.stringify(payload)
+    }).then(response => {
+      // console.log(response)
+      return response.json()
+    }).catch(err => {
+      console.log("Error: " + err)
+    })
   }
 
+  const handleSubmit = () => {
+    console.log("submit button pressed!");
+    // send currentTime, fps, duration
+    var payload = {
+      flag_num: currentFrame
+    }
+    console.log(payload)
+
+    // console.log("get csrf cookie")
+    var csrfToken = Cookies.get("csrftoken")
+
+    // console.log("sending request with payload...")
+    fetch("/api/flag", {
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRFToken": csrfToken
+      },
+      method: "POST",
+      body: JSON.stringify(payload)
+    }).then(response => {
+      // console.log(response)
+      return response.json()
+    }).catch(err => {
+      console.log("Error: " + err)
+    })
+  };
+
   return (
-    <div className="react-video-wrap" style={{ height, width }}>
-      <video
-        ref={playerEl}
-        key={url}
-        className="react-video-player"
-        loop={loop}
-        onClick={handlePlayerClick}
-      >
-        <source src={url} type="video/mp4" />
-      </video>
-      {viewSettings && (
-        <SettingsViewer
-          url={url}
-          fps={fps}
-          timeStart={timeStart}
-          volume={volume}
+    <div>
+      <div className="react-video-wrap" style={{ height, width }}>
+        <video
+          ref={playerEl}
+          key={url}
+          className="react-video-player"
           loop={loop}
-          viewSettings={viewSettings}
-          currentTime={currentTime}
-        />
-      )}
-      {isFullScreen ? (
-        <button className="react-video-close" onClick={handleFullScreenClick}>
-          Close video
-        </button>
-      ) : null}
-      {controls.length ? (
-        <Controls
-          progressEl={progressEl as any}
-          volumeEl={volumeEl as any}
-          controls={controls}
-          isPlaying={isPlaying}
-          volume={volume}
-          currentTime={currentTime}
-          duration={videoDuration}
-          muted={muted}
-          markers={markers}
-          onPlayClick={onPlay}
-          onPauseClick={onPause}
-          onProgressClick={handleProgressClick}
-          onVolumeClick={handleVolumeClick}
-          onMuteClick={handleMuteClick}
-          onFullScreenClick={handleFullScreenClick}
-          onMarkerClick={handleMarkerClick}
-          onNextFrameClick={handleNextFrameClick}
-          onLastFrameClick={handleLastFrameClick}
-          selectedMarker={selectedMarker}
-          markerConfiguration={markerConfiguration}
-        />
-      ) : null}
+          onClick={handlePlayerClick}
+        >
+          <source src={url} type="video/mp4" />
+        </video>
+        {viewSettings && (
+          <SettingsViewer
+            url={url}
+            fps={fps}
+            timeStart={timeStart}
+            volume={volume}
+            loop={loop}
+            viewSettings={viewSettings}
+            currentTime={currentTime}
+          />
+        )}
+        {isFullScreen ? (
+          <button className="react-video-close" onClick={handleFullScreenClick}>
+            Close video
+          </button>
+        ) : null}
+        {controls.length ? (
+          <Controls
+            progressEl={progressEl as any}
+            volumeEl={volumeEl as any}
+            controls={controls}
+            isPlaying={isPlaying}
+            volume={volume}
+            currentTime={currentTime}
+            duration={videoDuration}
+            muted={muted}
+            markers={markers}
+            onPlayClick={onPlay}
+            onPauseClick={onPause}
+            onProgressClick={handleProgressClick}
+            onVolumeClick={handleVolumeClick}
+            onMuteClick={handleMuteClick}
+            onFullScreenClick={handleFullScreenClick}
+            onMarkerClick={handleMarkerClick}
+            onNextFrameClick={handleNextFrameClick}
+            onLastFrameClick={handleLastFrameClick}
+            selectedMarker={selectedMarker}
+            markerConfiguration={markerConfiguration}
+          />
+        ) : null}
+      </div>
+      <form onSubmit={handleSubmit}>
+        <input type="submit" value="Flag Current Frame" />
+      </form>
     </div>
   )
 }

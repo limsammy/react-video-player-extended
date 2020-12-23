@@ -23,6 +23,7 @@ interface Props {
     selectedMarker?: Marker;
     viewSettings?: SettingsSelection[];
     markerConfiguration?: MarkerConfiguration;
+    currentFrame: number;
 }
 declare function VideoPlayer(props: Props): JSX.Element;
 export default VideoPlayer;
