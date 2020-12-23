@@ -4,6 +4,8 @@ import { Marker, MarkerConfiguration } from './marker'
 import { SettingsViewer } from './settings-viewer'
 import './styles.css'
 
+import Cookies from "js-cookie"
+
 export type ControlSelection =
   | 'FullScreen'
   | 'Play'
@@ -221,6 +223,7 @@ function VideoPlayer(props: Props) {
     console.log("current.duration: " + playerEl.current.duration)
     console.log("current.currentTime: " + playerEl.current.currentTime)
     console.log("frametime: " + frameTime)
+
     // send currentTime, fps, duration
     var payload = {
       duration: playerEl.current.duration,
@@ -228,15 +231,28 @@ function VideoPlayer(props: Props) {
       fps: fps,
       frameTime: frameTime
     }
-    fetch("/api/endpoint", {
+    console.log(payload)
+
+    console.log("get csrf cookie")
+    var csrfToken = Cookies.get("csrftoken")
+
+    console.log("sending request with payload...")
+    fetch("/api/frame", {
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRFToken": csrfToken
+      },
       method: "POST",
       body: JSON.stringify(payload)
-    }).then(function (response) {
+    }).then(response => {
       console.log(response)
-      return response.json();
-    });
+      return response.json()
+    }).catch(err => {
+      console.log("Error: " + err)
+    })
 
-    console.log("end here")
+    console.log("end fetch here")
   }
 
   const handleLastFrameClick = () => {
