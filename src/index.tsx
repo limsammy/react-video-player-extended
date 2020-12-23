@@ -61,17 +61,17 @@ function VideoPlayer(props: Props) {
     timeStart = 0,
     fps = 30,
     // tslint:disable-next-line: no-empty
-    onPlay = () => {},
+    onPlay = () => { },
     // tslint:disable-next-line: no-empty
-    onPause = () => {},
+    onPause = () => { },
     // tslint:disable-next-line: no-empty
-    onVolume = () => {},
+    onVolume = () => { },
     // tslint:disable-next-line: no-empty
-    onProgress = () => {},
+    onProgress = () => { },
     // tslint:disable-next-line: no-empty
-    onDuration = () => {},
+    onDuration = () => { },
     // tslint:disable-next-line: no-empty
-    onMarkerClick = () => {},
+    onMarkerClick = () => { },
     selectedMarker,
     viewSettings,
     markerConfiguration,
@@ -218,6 +218,25 @@ function VideoPlayer(props: Props) {
       playerEl.current.duration,
       playerEl.current.currentTime + frameTime,
     )
+    console.log("current.duration: " + playerEl.current.duration)
+    console.log("current.currentTime: " + playerEl.current.currentTime)
+    console.log("frametime: " + frameTime)
+    // send currentTime, fps, duration
+    var payload = {
+      duration: playerEl.current.duration,
+      currentTime: playerEl.current.currentTime,
+      fps: fps,
+      frameTime: frameTime
+    }
+    fetch("/api/endpoint", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }).then(function (response) {
+      console.log(response)
+      return response.json();
+    });
+
+    console.log("end here")
   }
 
   const handleLastFrameClick = () => {
