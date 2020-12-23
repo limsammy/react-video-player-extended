@@ -15,7 +15,7 @@ export type ControlSelection =
   | 'LastFrame'
   | 'NextFrame'
 
-export type SettingsSelection = 'Title' | 'FPS' | 'Repeat' | 'StartTime' | 'Volume'
+export type SettingsSelection = 'Title' | 'FPS' | 'Repeat' | 'StartTime' | 'Volume' | 'FrameNum'
 
 interface Props {
   url: string
@@ -280,6 +280,7 @@ function VideoPlayer(props: Props) {
           volume={volume}
           loop={loop}
           viewSettings={viewSettings}
+          currentTime={currentTime}
         />
       )}
       {isFullScreen ? (
