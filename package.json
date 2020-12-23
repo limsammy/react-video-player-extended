@@ -70,5 +70,8 @@
     "build-prod": "webpack --config webpack.prod.config.js",
     "test": "jest",
     "lint": "tslint -p ."
+  },
+  "dependencies": {
+    "js-cookie": "^2.2.1"
   }
 }
