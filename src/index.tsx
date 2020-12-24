@@ -284,7 +284,7 @@ function VideoPlayer(props: Props) {
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.FormEvent<HTMLElement>) => {
     console.log("submit button pressed!");
     // send currentTime, fps, duration
     var payload = {
@@ -310,6 +310,8 @@ function VideoPlayer(props: Props) {
     }).catch(err => {
       console.log("Error: " + err)
     })
+
+    event.preventDefault()
   };
 
   return (
