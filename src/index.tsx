@@ -5,6 +5,7 @@ import { SettingsViewer } from './settings-viewer'
 import './styles.css'
 
 import Cookies from "js-cookie"
+import Button from 'react-bootstrap/Button';
 
 export type ControlSelection =
   | 'FullScreen'
@@ -368,7 +369,7 @@ function VideoPlayer(props: Props) {
         ) : null}
       </div>
       <form onSubmit={handleSubmit}>
-        <input type="submit" value="Flag Current Frame" />
+        <Button type="submit" variant="success" value="Flag Current Frame" />
       </form>
     </div>
   )
