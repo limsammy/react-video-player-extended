@@ -369,7 +369,7 @@ function VideoPlayer(props: Props) {
         ) : null}
       </div>
       <form onSubmit={handleSubmit}>
-        <Button type="submit" variant="success" value="Flag Current Frame" />
+        <Button type="submit" variant="success">Flag Current Frame</Button>
       </form>
     </div>
   )
